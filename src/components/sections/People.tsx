@@ -4,6 +4,7 @@ import { enDictionary } from "@/i18n/dictionaries/en";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 function MosaicTile({
@@ -120,7 +121,7 @@ export function People({ content = enDictionary.people }: PeopleProps) {
     >
       <Container>
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-[60px]">
-          <div className="flex flex-col items-start gap-6 lg:gap-8">
+          <Reveal className="flex flex-col items-start gap-6 lg:gap-8">
             <div className="flex flex-col gap-2">
               <Eyebrow>{eyebrow}</Eyebrow>
               <SectionHeading id="people-heading">{heading}</SectionHeading>
@@ -133,9 +134,11 @@ export function People({ content = enDictionary.people }: PeopleProps) {
             <Button href={cta.href} variant="secondary">
               {cta.label}
             </Button>
-          </div>
+          </Reveal>
 
-          <PhotoMosaic mosaicColumns={mosaicColumns} />
+          <Reveal delayMs={140}>
+            <PhotoMosaic mosaicColumns={mosaicColumns} />
+          </Reveal>
         </div>
       </Container>
     </section>

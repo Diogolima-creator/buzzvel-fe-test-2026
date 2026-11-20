@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { ArrowRightIcon } from "@/components/ui/Icons";
+import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 interface FeaturedCourseProps {
@@ -36,7 +37,7 @@ export function FeaturedCourse({
       <Container>
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-[60px]">
           {/* Course photograph with overlapping yellow badge */}
-          <div className="relative">
+          <Reveal className="relative">
             <div className="relative h-[280px] w-full overflow-hidden rounded-[16px] sm:h-[360px] lg:h-[408px]">
               <Image
                 src={image.src}
@@ -50,10 +51,10 @@ export function FeaturedCourse({
             <span className="absolute -top-3 -left-3 z-10 inline-block rounded-[6px] bg-yellow px-3 py-[6px] text-[12px] leading-[16px] font-semibold tracking-[1.44px] text-ink uppercase">
               {badge}
             </span>
-          </div>
+          </Reveal>
 
           {/* Course details */}
-          <div>
+          <Reveal delayMs={120}>
             <Eyebrow tone="white">{eyebrow}</Eyebrow>
 
             <SectionHeading
@@ -99,7 +100,7 @@ export function FeaturedCourse({
                 <ArrowRightIcon className="h-5 w-5 text-current transition-transform duration-150 group-hover:translate-x-1" />
               </Button>
             </div>
-          </div>
+          </Reveal>
         </div>
       </Container>
     </section>

@@ -2,6 +2,7 @@ import type { SiteDictionary, StepItem } from "@/i18n/types";
 import { enDictionary } from "@/i18n/dictionaries/en";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 function StepBadge({ id }: { id: StepItem["id"] }) {
@@ -51,12 +52,12 @@ export function HowItWorks({
       className="scroll-mt-[70px] bg-cream py-[60px] lg:py-[100px]"
     >
       <Container>
-        <div className="text-center">
+        <Reveal className="text-center">
           <Eyebrow>{eyebrow}</Eyebrow>
           <SectionHeading id="how-it-works-heading" className="mt-4">
             {heading}
           </SectionHeading>
-        </div>
+        </Reveal>
 
         <div className="relative mt-10 lg:mt-20 lg:py-7">
           {/* Horizontal connector line on desktop/tablet */}
@@ -73,21 +74,23 @@ export function HowItWorks({
                   index < steps.length - 1 ? "pb-[76px] md:pb-0" : ""
                 }`}
               >
-                <div className="relative z-10">
-                  <StepBadge id={item.id} />
-                </div>
+                <Reveal delayMs={index * 110}>
+                  <div className="relative z-10">
+                    <StepBadge id={item.id} />
+                  </div>
 
-                <Eyebrow tone="muted" className="mt-6">
-                  {item.step}
-                </Eyebrow>
+                  <Eyebrow tone="muted" className="mt-6">
+                    {item.step}
+                  </Eyebrow>
 
-                <h3 className="mt-2 font-display text-[20px] leading-[28px] font-bold text-ink lg:leading-[32px]">
-                  {item.title}
-                </h3>
+                  <h3 className="mt-2 font-display text-[20px] leading-[28px] font-bold text-ink lg:leading-[32px]">
+                    {item.title}
+                  </h3>
 
-                <p className="mt-3 text-[14px] leading-[24px] text-muted lg:text-[16px] lg:leading-[28px]">
-                  {item.description}
-                </p>
+                  <p className="mt-3 text-[14px] leading-[24px] text-muted lg:text-[16px] lg:leading-[28px]">
+                    {item.description}
+                  </p>
+                </Reveal>
 
                 {/* Mobile vertical connector line between steps */}
                 {index < steps.length - 1 ? (

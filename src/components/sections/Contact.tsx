@@ -3,6 +3,7 @@ import { enDictionary } from "@/i18n/dictionaries/en";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { ChatIcon, ClockIcon } from "@/components/ui/Icons";
+import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ContactForm } from "@/components/sections/ContactForm";
 
@@ -30,7 +31,7 @@ export function Contact({ content = enDictionary.contact }: ContactProps) {
       <Container>
         <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
           {/* Info column */}
-          <div className="flex flex-col gap-8 lg:w-[480px] lg:gap-10">
+          <Reveal className="flex flex-col gap-8 lg:w-[480px] lg:gap-10">
             <div className="flex flex-col gap-4">
               <Eyebrow>{eyebrow}</Eyebrow>
               <SectionHeading id="contact-heading">{heading}</SectionHeading>
@@ -71,10 +72,12 @@ export function Contact({ content = enDictionary.contact }: ContactProps) {
                 </div>
               </div>
             </div>
-          </div>
+          </Reveal>
 
           {/* Interactive form card */}
-          <ContactForm content={content} />
+          <Reveal delayMs={120} className="w-full lg:w-[540px] lg:shrink-0">
+            <ContactForm content={content} />
+          </Reveal>
         </div>
       </Container>
     </section>

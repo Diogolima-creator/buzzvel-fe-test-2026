@@ -9,6 +9,7 @@ import {
   DecorLayersIcon,
   DecorSparkIcon,
 } from "@/components/ui/Icons";
+import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 interface FinalCTAProps {
@@ -46,7 +47,7 @@ export function FinalCTA({ content = enDictionary.finalCta }: FinalCTAProps) {
       </div>
 
       {/* Centered content */}
-      <div className="relative z-10 mx-auto flex max-w-[720px] flex-col items-center px-5 text-center lg:px-8">
+      <Reveal className="relative z-10 mx-auto flex max-w-[720px] flex-col items-center px-5 text-center lg:px-8">
         <AvatarStack avatars={avatars} size="md" borderTone="yellow" />
 
         <SectionHeading id="final-cta-heading" size="large" className="mt-8">
@@ -65,7 +66,7 @@ export function FinalCTA({ content = enDictionary.finalCta }: FinalCTAProps) {
             {secondaryCta.label}
           </Button>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

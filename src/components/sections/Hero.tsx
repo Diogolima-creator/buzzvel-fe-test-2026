@@ -94,7 +94,7 @@ export function Hero({ content = enDictionary.hero }: HeroProps) {
               </div>
 
               {/* Top-left floating badge */}
-              <div className="absolute top-[6px] left-0 z-20 flex items-center gap-3 rounded-[12px] bg-white px-4 py-3 shadow-badge lg:top-4 lg:-left-[22px]">
+              <div className="animate-badge-in [animation-delay:180ms] absolute top-[6px] left-0 z-20 flex items-center gap-3 rounded-[12px] bg-white px-4 py-3 shadow-badge lg:top-4 lg:-left-[22px]">
                 <span className="inline-flex h-8 min-w-[43px] items-center justify-center rounded-[8px] bg-primary-soft px-1 text-[14px] leading-[24px] font-bold text-primary">
                   {coursesBadge.count}
                 </span>
@@ -104,7 +104,7 @@ export function Hero({ content = enDictionary.hero }: HeroProps) {
               </div>
 
               {/* Bottom-right floating rating badge */}
-              <div className="absolute top-[297px] right-[-11px] z-20 flex items-center gap-2 rounded-[12px] bg-white px-4 py-3 shadow-badge lg:top-[437px] lg:right-auto lg:left-[348px]">
+              <div className="animate-badge-in [animation-delay:320ms] absolute top-[297px] right-[-11px] z-20 flex items-center gap-2 rounded-[12px] bg-white px-4 py-3 shadow-badge lg:top-[437px] lg:right-auto lg:left-[348px]">
                 <div aria-hidden="true" className="flex items-center gap-[2px]">
                   {Array.from({ length: ratingBadge.stars }).map((_, index) => (
                     <StarIcon key={index} />

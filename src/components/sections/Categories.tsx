@@ -67,7 +67,12 @@ export function Categories({
 
         <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-10 lg:grid-cols-4 lg:gap-5">
           {items.map((item, index) => (
-            <Reveal key={item.number} delayMs={index * 80} className="h-full">
+            <Reveal
+              key={item.number}
+              variant="card"
+              delayMs={index * 90}
+              className="h-full"
+            >
               <CategoryCard category={item} exploreLabel={exploreLabel} />
             </Reveal>
           ))}

@@ -32,29 +32,37 @@ export function FeaturedCourse({
     <section
       id="featured-course"
       aria-labelledby="featured-course-heading"
-      className="scroll-mt-[70px] bg-primary py-[60px] lg:py-[100px]"
+      className="scroll-mt-[70px] overflow-x-clip bg-primary py-[60px] lg:py-[100px]"
     >
       <Container>
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-[60px]">
           {/* Course photograph with overlapping yellow badge */}
-          <Reveal className="relative">
-            <div className="relative h-[280px] w-full overflow-hidden rounded-[16px] sm:h-[360px] lg:h-[408px]">
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                sizes="(min-width: 1024px) 538px, (min-width: 640px) 600px, 362px"
-                className="object-cover"
-              />
-            </div>
+          <div className="relative">
+            <Reveal variant="zoom">
+              <div className="group relative h-[280px] w-full overflow-hidden rounded-[16px] sm:h-[360px] lg:h-[408px]">
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  sizes="(min-width: 1024px) 538px, (min-width: 640px) 600px, 362px"
+                  className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                />
+              </div>
+            </Reveal>
 
-            <span className="absolute -top-3 -left-3 z-10 inline-block rounded-[6px] bg-yellow px-3 py-[6px] text-[12px] leading-[16px] font-semibold tracking-[1.44px] text-ink uppercase">
-              {badge}
-            </span>
-          </Reveal>
+            <Reveal
+              variant="badge"
+              delayMs={240}
+              className="absolute -top-3 -left-3 z-10"
+            >
+              <span className="inline-block rounded-[6px] bg-yellow px-3 py-[6px] text-[12px] leading-[16px] font-semibold tracking-[1.44px] text-ink uppercase shadow-sm">
+                {badge}
+              </span>
+            </Reveal>
+          </div>
 
           {/* Course details */}
-          <Reveal delayMs={120}>
+          <Reveal variant="slide-left" delayMs={110}>
             <Eyebrow tone="white">{eyebrow}</Eyebrow>
 
             <SectionHeading
@@ -77,12 +85,13 @@ export function FeaturedCourse({
               aria-label={detailsAriaLabel}
               className="mt-6 flex flex-wrap gap-3"
             >
-              {metadata.map((item) => (
-                <li
-                  key={item}
-                  className="rounded-[8px] border border-border px-[14px] py-[6px] text-[14px] leading-[24px] text-white"
-                >
-                  {item}
+              {metadata.map((item, index) => (
+                <li key={item}>
+                  <Reveal variant="badge" delayMs={200 + index * 70}>
+                    <span className="inline-block rounded-[8px] border border-border px-[14px] py-[6px] text-[14px] leading-[24px] text-white">
+                      {item}
+                    </span>
+                  </Reveal>
                 </li>
               ))}
             </ul>

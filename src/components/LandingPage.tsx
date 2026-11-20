@@ -1,4 +1,5 @@
 import { getDictionary, type Locale } from "@/i18n";
+import { BrandIntro } from "@/components/layout/BrandIntro";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { Categories } from "@/components/sections/Categories";
@@ -19,6 +20,7 @@ export function LandingPage({ locale }: LandingPageProps) {
 
   return (
     <>
+      <BrandIntro content={dictionary.intro} />
       <Header locale={locale} content={dictionary.header} />
       <main id="main-content" className="flex-1">
         <Hero content={dictionary.hero} />

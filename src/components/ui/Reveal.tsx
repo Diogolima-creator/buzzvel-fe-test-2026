@@ -2,13 +2,28 @@
 
 import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 
+export type RevealVariant =
+  | "fade-up"
+  | "card"
+  | "badge"
+  | "slide-left"
+  | "slide-right"
+  | "zoom"
+  | "line-x";
+
 interface RevealProps {
-  children: ReactNode;
+  children?: ReactNode;
+  variant?: RevealVariant;
   delayMs?: number;
   className?: string;
 }
 
-export function Reveal({ children, delayMs = 0, className }: RevealProps) {
+export function Reveal({
+  children,
+  variant = "fade-up",
+  delayMs = 0,
+  className,
+}: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -62,7 +77,12 @@ export function Reveal({ children, delayMs = 0, className }: RevealProps) {
       : undefined;
 
   return (
-    <div ref={ref} style={style} className={className}>
+    <div
+      ref={ref}
+      data-reveal-variant={variant}
+      style={style}
+      className={className}
+    >
       {children}
     </div>
   );

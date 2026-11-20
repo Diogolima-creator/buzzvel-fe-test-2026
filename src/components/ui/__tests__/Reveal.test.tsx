@@ -36,7 +36,7 @@ describe("Reveal", () => {
     });
 
     const { container } = render(
-      <Reveal delayMs={120}>
+      <Reveal variant="card" delayMs={120}>
         <p>Animated section</p>
       </Reveal>,
     );
@@ -44,6 +44,7 @@ describe("Reveal", () => {
     const wrapper = container.firstElementChild as HTMLElement;
     expect(screen.getByText("Animated section")).toBeInTheDocument();
     expect(wrapper.dataset.reveal).toBe("hidden");
+    expect(wrapper.dataset.revealVariant).toBe("card");
     expect(wrapper.style.getPropertyValue("--reveal-delay")).toBe("120ms");
     expect(observe).toHaveBeenCalledWith(wrapper);
 

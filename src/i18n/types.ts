@@ -71,6 +71,12 @@ export interface ContactSectionContent {
   validation: ContactValidationMessages;
 }
 
+export interface IntroContent {
+  ariaLabel: string;
+  tagline: string;
+  skipLabel: string;
+}
+
 export interface SiteDictionary {
   meta: {
     title: string;
@@ -80,6 +86,7 @@ export interface SiteDictionary {
     ogImageAlt: string;
     skipToContent: string;
   };
+  intro: IntroContent;
   header: {
     homeAriaLabel: string;
     primaryNavAriaLabel: string;

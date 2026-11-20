@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { SiteDictionary } from "@/i18n/types";
 import { enDictionary } from "@/i18n/dictionaries/en";
 import { Container } from "@/components/ui/Container";
+import { CountUp } from "@/components/ui/CountUp";
 import { QuoteIcon } from "@/components/ui/Icons";
 import { Reveal } from "@/components/ui/Reveal";
 
@@ -18,12 +19,12 @@ export function Testimonial({
     <section
       id="testimonial"
       aria-label={sectionAriaLabel}
-      className="scroll-mt-[70px] bg-white py-[60px] lg:py-[100px]"
+      className="scroll-mt-[70px] overflow-x-clip bg-white py-[60px] lg:py-[100px]"
     >
       <Container>
         <div className="flex flex-col gap-[60px] lg:flex-row lg:items-center lg:justify-between">
           {/* Quote column */}
-          <Reveal className="lg:max-w-[600px]">
+          <Reveal variant="slide-right" className="lg:max-w-[600px]">
             <figure>
               <QuoteIcon className="h-[22px] w-[24px] text-primary" />
 
@@ -56,13 +57,21 @@ export function Testimonial({
           </Reveal>
 
           {/* Metrics column */}
-          <Reveal delayMs={140} className="lg:w-[401px] lg:shrink-0">
+          <div className="lg:w-[401px] lg:shrink-0">
             <dl className="grid grid-cols-3 gap-4 lg:flex lg:flex-col lg:gap-5 lg:border-l lg:border-border lg:pl-12">
-              {stats.map((stat) => (
-                <div key={stat.label}>
+              {stats.map((stat, index) => (
+                <Reveal
+                  key={stat.label}
+                  variant="card"
+                  delayMs={index * 110}
+                >
                   <dt className="sr-only">{stat.label}</dt>
                   <dd className="font-display text-[40px] leading-[44px] font-extrabold tracking-[-1px] text-primary lg:text-[64px] lg:leading-[70px] lg:tracking-[-1.6px]">
-                    {stat.value}
+                    <CountUp
+                      text={stat.value}
+                      durationMs={1250}
+                      delayMs={index * 140}
+                    />
                   </dd>
                   <p
                     aria-hidden="true"
@@ -70,10 +79,10 @@ export function Testimonial({
                   >
                     {stat.label}
                   </p>
-                </div>
+                </Reveal>
               ))}
             </dl>
-          </Reveal>
+          </div>
         </div>
       </Container>
     </section>

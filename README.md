@@ -1,9 +1,12 @@
 # Luma — Buzzvel Front-End Engineer Coding Challenge (Nov 2026)
 
-Responsive, internationalized (`EN` / `PT`) single-page landing site for **Luma** built from the supplied Figma design using **Next.js App Router**, **TypeScript**, and **Tailwind CSS v4**, statically exported and deployed on **Cloudflare Pages**.
+Responsive, internationalized (`EN` / `PT` / `ES` / `FR` / `DE`) single-page landing site for **Luma** built from the supplied Figma design using **Next.js App Router**, **TypeScript**, and **Tailwind CSS v4**, statically exported and deployed on **Cloudflare Pages**.
 
 - **Live Preview (EN)**: [https://buzzvel-fe-test-2026.pages.dev](https://buzzvel-fe-test-2026.pages.dev)
 - **Live Preview (PT)**: [https://buzzvel-fe-test-2026.pages.dev/pt](https://buzzvel-fe-test-2026.pages.dev/pt)
+- **Live Preview (ES)**: [https://buzzvel-fe-test-2026.pages.dev/es](https://buzzvel-fe-test-2026.pages.dev/es)
+- **Live Preview (FR)**: [https://buzzvel-fe-test-2026.pages.dev/fr](https://buzzvel-fe-test-2026.pages.dev/fr)
+- **Live Preview (DE)**: [https://buzzvel-fe-test-2026.pages.dev/de](https://buzzvel-fe-test-2026.pages.dev/de)
 
 ## Getting Started
 
@@ -40,15 +43,16 @@ npx wrangler pages deploy out --project-name=buzzvel-fe-test-2026
 
 ## Architecture & Implementation Highlights
 
-- **Static-first i18n (`EN` / `PT`) with zero client hydration flicker**:
-  - Uses Next.js App Router route groups (`src/app/(default)` for `/` in English, and `src/app/[locale]` with `generateStaticParams` for `/en` and `/pt`) sharing a single `DocumentShell` and `LandingPage`.
-  - Typed dictionaries in `src/i18n/dictionaries/en.ts` and `src/i18n/dictionaries/pt.ts` cover every heading, body copy, CTA, image `alt` attribute, ARIA label, SEO/OpenGraph tag, and contact form validation error.
-  - Emits accurate `<html lang="en">` / `<html lang="pt">`, localized `<title>` and OpenGraph `locale`, and `hreflang` alternates (`en`, `pt`, `x-default`).
-  - `LanguageSwitcher` renders standard `<Link>` elements (`/` and `/pt`) with `aria-current="page"` and `hrefLang`, working even with JavaScript disabled.
-- **Server Components by default**: Only `MobileMenu`, `ContactForm`, and the lightweight `Reveal` scroll wrapper use `"use client"`, keeping the client JavaScript footprint minimal.
-- **Smooth scroll animations (`src/components/ui/Reveal.tsx`)**:
-  - Zero-dependency, GPU-composited (`opacity` + `translate3d`) scroll-reveal animations using native `IntersectionObserver` with subtle staggered delays across cards, steps, and section columns.
-  - Progressive-enhancement safe: above-the-fold Hero content stays immediately visible (zero LCP impact), elements are never stuck invisible without JS or on direct `#anchor` navigation, and `prefers-reduced-motion: reduce` disables all motion automatically.
+- **Static-first i18n (`EN` / `PT` / `ES` / `FR` / `DE`) with zero client hydration flicker**:
+  - Uses Next.js App Router route groups (`src/app/(default)` for `/` in English, and `src/app/[locale]` with `generateStaticParams` for `/en`, `/pt`, `/es`, `/fr`, and `/de`) sharing a single `DocumentShell` and `LandingPage`.
+  - Typed dictionaries in `src/i18n/dictionaries/{en,pt,es,fr,de}.ts` cover every heading, body copy, CTA, image `alt` attribute, ARIA label, SEO/OpenGraph tag, and contact form validation error.
+  - Emits accurate `<html lang="...">`, localized `<title>` and OpenGraph `locale` / `alternateLocale`, and `hreflang` alternates (`en`, `pt`, `es`, `fr`, `de`, `x-default`).
+  - `LanguageSwitcher` renders a compact, keyboard-accessible dropdown with `<Link>` elements (`/`, `/pt`, `/es`, `/fr`, `/de`), `aria-current="page"`, and `hrefLang`.
+- **Server Components by default**: Only `LanguageSwitcher`, `MobileMenu`, `ContactForm`, and the lightweight `Reveal` scroll wrapper use `"use client"`, keeping the client JavaScript footprint minimal.
+- **Choreographed scroll & count-up animations (`src/components/ui/Reveal.tsx`, `src/components/ui/CountUp.tsx`)**:
+  - Zero-dependency, GPU-composited (`opacity` + `transform`) reveal system with distinct, cohesive variants per element family: `fade-up` for editorial headings/copy, `card` (lift + scale) for category, metric, contact info, and form cards, `badge` (spring pop) for floating badges, step icons, metadata pills, and avatar stacks, `slide-left`/`slide-right` for two-column flows, and `zoom` for featured imagery and staggered mosaic columns.
+  - Locale-aware `CountUp` animates quantitative metrics (`24,000+` / `24.000` / `24 000`, `120+`, `4.9` / `4,9`, `24K+`, `92%`) from `0` using `tabular-nums`, preserving SSR text and `sr-only` final values for screen readers.
+  - Progressive-enhancement safe: above-the-fold Hero copy and image stay immediately visible (zero LCP impact), elements are never stuck invisible without JS or on direct `#anchor` navigation, and `prefers-reduced-motion: reduce` disables all motion automatically.
 - **Design tokens in CSS (`src/app/globals.css`)**: Colors, typography font families (`Plus Jakarta Sans` and `Inter` via `next/font/google` with `display: swap`), and shadow tokens are extracted directly from the Figma file and mapped via Tailwind CSS v4 `@theme inline`.
 - **Reusable UI primitives**:
   - `src/components/ui/` provides reusable `Button` (polymorphic link/button with variants), `Container`, `Eyebrow`, `SectionHeading`, `AvatarStack`, `Reveal`, and inline SVG `Icons`.
@@ -86,8 +90,8 @@ Because the Figma file does not define prototype links, tablet artboards, or an 
 | Check | Result |
 | --- | --- |
 | `pnpm lint` | Passed (0 warnings, 0 errors) |
-| `pnpm test` | 5 suites / 14 tests passed (`validation`, `i18n`, `Reveal`, `ContactForm` EN+PT, `MobileMenu`) |
-| `pnpm build` | Passed cleanly (`out/` static export with `/`, `/en`, `/pt`, `404.html`) |
+| `pnpm test` | 7 suites / 18 tests passed (`validation`, `i18n`, `LanguageSwitcher`, `Reveal`, `CountUp`, `ContactForm` EN+PT, `MobileMenu`) |
+| `pnpm build` | Passed cleanly (`out/` static export with `/`, `/en`, `/pt`, `/es`, `/fr`, `/de`, `404.html`) |
 | Responsive overflow (`360px`–`1440px`) | 0 horizontal overflow on both `/` and `/pt` across 360, 402, 768, 1024, 1280, 1440px |
 | `axe-core` (WCAG 2.1 AA + best practices) | 0 violations (desktop, mobile, open mobile menu, form validation state) |
 | Lighthouse (Desktop) | Performance **100** · Accessibility **100** · Best Practices **100** · SEO **100** (LCP 0.6s, CLS 0) |

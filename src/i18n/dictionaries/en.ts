@@ -11,6 +11,11 @@ export const enDictionary: SiteDictionary = {
     ogImageAlt: "Person focused on learning at their laptop",
     skipToContent: "Skip to main content",
   },
+  intro: {
+    ariaLabel: "Luma welcome screen",
+    tagline: "Practical learning for curious people.",
+    skipLabel: "Skip intro",
+  },
   header: {
     homeAriaLabel: "Luma home",
     primaryNavAriaLabel: "Primary",

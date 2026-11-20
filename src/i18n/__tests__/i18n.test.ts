@@ -5,54 +5,77 @@ import {
   getDictionary,
   getLocalePath,
   isLocale,
+  LOCALE_META,
   LOCALES,
 } from "@/i18n";
 import { validateContactForm } from "@/lib/validation";
 
 describe("i18n", () => {
   it("validates supported locales and computes canonical paths", () => {
-    expect(LOCALES).toEqual(["en", "pt"]);
+    expect(LOCALES).toEqual(["en", "pt", "es", "fr", "de"]);
     expect(DEFAULT_LOCALE).toBe("en");
-    expect(isLocale("en")).toBe(true);
-    expect(isLocale("pt")).toBe(true);
-    expect(isLocale("fr")).toBe(false);
+    for (const locale of LOCALES) {
+      expect(isLocale(locale)).toBe(true);
+    }
+    expect(isLocale("it")).toBe(false);
     expect(getLocalePath("en")).toBe("/");
     expect(getLocalePath("pt")).toBe("/pt");
+    expect(getLocalePath("es")).toBe("/es");
+    expect(getLocalePath("fr")).toBe("/fr");
+    expect(getLocalePath("de")).toBe("/de");
   });
 
-  it("returns complete, distinct dictionaries for EN and PT", () => {
-    const en = getDictionary("en");
-    const pt = getDictionary("pt");
+  it("returns complete, distinct dictionaries for all locales", () => {
+    const headings = new Set<string>();
 
-    expect(en.hero.heading).toContain("Build skills");
-    expect(pt.hero.heading).toContain("Desenvolva habilidades");
-    expect(en.categories.items).toHaveLength(4);
-    expect(pt.categories.items).toHaveLength(4);
-    expect(en.howItWorks.steps).toHaveLength(3);
-    expect(pt.howItWorks.steps).toHaveLength(3);
-    expect(en.people.mosaicColumns.flat()).toHaveLength(10);
-    expect(pt.people.mosaicColumns.flat()).toHaveLength(10);
+    for (const locale of LOCALES) {
+      const dict = getDictionary(locale);
+      headings.add(dict.hero.heading);
+      expect(dict.categories.items).toHaveLength(4);
+      expect(dict.howItWorks.steps).toHaveLength(3);
+      expect(dict.people.mosaicColumns.flat()).toHaveLength(10);
+      expect(dict.footer.columns).toHaveLength(3);
+    }
+
+    expect(headings.size).toBe(LOCALES.length);
+    expect(getDictionary("de").hero.heading).toContain("Entwickle Fähigkeiten");
+    expect(getDictionary("fr").hero.heading).toContain(
+      "Développez des compétences",
+    );
+    expect(getDictionary("es").hero.heading).toContain("Desarrolla habilidades");
   });
 
-  it("builds localized SEO metadata with hreflang alternates", () => {
-    const ptMeta = buildMetadata("pt");
-    expect(ptMeta.title).toContain("Aprendizado prático");
-    expect(ptMeta.alternates?.canonical).toBe("/pt");
-    expect(ptMeta.alternates?.languages).toMatchObject({
+  it("builds localized SEO metadata with hreflang alternates for all locales", () => {
+    const deMeta = buildMetadata("de");
+    expect(deMeta.title).toContain("Praktisches Lernen");
+    expect(deMeta.alternates?.canonical).toBe("/de");
+    expect(deMeta.alternates?.languages).toMatchObject({
       en: "/",
       pt: "/pt",
+      es: "/es",
+      fr: "/fr",
+      de: "/de",
       "x-default": "/",
     });
+    expect(deMeta.openGraph?.locale).toBe(LOCALE_META.de.ogLocale);
+    expect(deMeta.openGraph?.alternateLocale).toEqual([
+      "en_US",
+      "pt_BR",
+      "es_ES",
+      "fr_FR",
+    ]);
   });
 
-  it("localizes contact form validation messages", () => {
-    const pt = getDictionary("pt");
-    const errors = validateContactForm(
-      { name: "", email: "invalido", question: "curto" },
-      pt.contact.validation,
-    );
-    expect(errors.name).toBe(pt.contact.validation.nameRequired);
-    expect(errors.email).toBe(pt.contact.validation.emailInvalid);
-    expect(errors.question).toBe(pt.contact.validation.questionMinLength);
+  it("localizes contact form validation messages across all locales", () => {
+    for (const locale of LOCALES) {
+      const dict = getDictionary(locale);
+      const errors = validateContactForm(
+        { name: "", email: "invalid", question: "short" },
+        dict.contact.validation,
+      );
+      expect(errors.name).toBe(dict.contact.validation.nameRequired);
+      expect(errors.email).toBe(dict.contact.validation.emailInvalid);
+      expect(errors.question).toBe(dict.contact.validation.questionMinLength);
+    }
   });
 });

@@ -3,15 +3,22 @@ import {
   DEFAULT_LOCALE,
   getLocalePath,
   LOCALE_META,
+  LOCALES,
   type Locale,
 } from "@/i18n/config";
+import { deDictionary } from "@/i18n/dictionaries/de";
 import { enDictionary } from "@/i18n/dictionaries/en";
+import { esDictionary } from "@/i18n/dictionaries/es";
+import { frDictionary } from "@/i18n/dictionaries/fr";
 import { ptDictionary } from "@/i18n/dictionaries/pt";
 import type { SiteDictionary } from "@/i18n/types";
 
 const DICTIONARIES: Record<Locale, SiteDictionary> = {
   en: enDictionary,
   pt: ptDictionary,
+  es: esDictionary,
+  fr: frDictionary,
+  de: deDictionary,
 };
 
 export function getDictionary(locale: Locale = DEFAULT_LOCALE): SiteDictionary {
@@ -24,24 +31,29 @@ export function buildMetadata(locale: Locale = DEFAULT_LOCALE): Metadata {
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://buzzvel-fe-test-2026.pages.dev";
 
+  const languages = Object.fromEntries([
+    ...LOCALES.map((item) => [item, getLocalePath(item)]),
+    ["x-default", getLocalePath(DEFAULT_LOCALE)],
+  ]);
+
+  const alternateLocale = LOCALES.filter((item) => item !== locale).map(
+    (item) => LOCALE_META[item].ogLocale,
+  );
+
   return {
     metadataBase: new URL(siteUrl),
     title: dictionary.meta.title,
     description: dictionary.meta.description,
     alternates: {
       canonical: getLocalePath(locale),
-      languages: {
-        en: getLocalePath("en"),
-        pt: getLocalePath("pt"),
-        "x-default": getLocalePath(DEFAULT_LOCALE),
-      },
+      languages,
     },
     openGraph: {
       title: dictionary.meta.ogTitle,
       description: dictionary.meta.ogDescription,
       type: "website",
       locale: meta.ogLocale,
-      alternateLocale: locale === "en" ? ["pt_BR"] : ["en_US"],
+      alternateLocale,
       siteName: "Luma Learning",
       url: getLocalePath(locale),
       images: [

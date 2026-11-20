@@ -10,7 +10,7 @@ function StepBadge({ id }: { id: StepItem["id"] }) {
     return (
       <div
         aria-hidden="true"
-        className="relative h-14 w-14 rounded-full bg-primary-soft"
+        className="relative h-14 w-14 rounded-full bg-primary-soft transition-transform duration-300 ease-out hover:scale-105"
       >
         <div className="absolute top-2 left-2 h-6 w-6 rounded-[6px] bg-primary" />
       </div>
@@ -19,7 +19,10 @@ function StepBadge({ id }: { id: StepItem["id"] }) {
 
   if (id === "experience") {
     return (
-      <div aria-hidden="true" className="relative h-14 w-14">
+      <div
+        aria-hidden="true"
+        className="relative h-14 w-14 transition-transform duration-300 ease-out hover:scale-105"
+      >
         <div className="absolute inset-0 -rotate-12 rounded-[8px] bg-coral/15 md:bg-peach" />
         <div className="absolute top-6 left-6 h-7 w-7 rounded-full bg-coral" />
       </div>
@@ -29,7 +32,7 @@ function StepBadge({ id }: { id: StepItem["id"] }) {
   return (
     <div
       aria-hidden="true"
-      className="relative h-14 w-14 rounded-[12px] bg-yellow-soft"
+      className="relative h-14 w-14 rounded-[12px] bg-yellow-soft transition-transform duration-300 ease-out hover:scale-105"
     >
       <div className="absolute top-7 left-2 h-5 w-5 rounded-full bg-yellow-accent" />
     </div>
@@ -60,9 +63,10 @@ export function HowItWorks({
         </Reveal>
 
         <div className="relative mt-10 lg:mt-20 lg:py-7">
-          {/* Horizontal connector line on desktop/tablet */}
-          <div
-            aria-hidden="true"
+          {/* Horizontal connector line on desktop/tablet — draws left to right */}
+          <Reveal
+            variant="line-x"
+            delayMs={120}
             className="pointer-events-none hidden h-px bg-border md:absolute md:top-[28px] md:left-[52px] md:block md:w-[calc(66.666%+16px)] lg:top-[56px] lg:w-[761px]"
           />
 
@@ -74,11 +78,15 @@ export function HowItWorks({
                   index < steps.length - 1 ? "pb-[76px] md:pb-0" : ""
                 }`}
               >
-                <Reveal delayMs={index * 110}>
-                  <div className="relative z-10">
-                    <StepBadge id={item.id} />
-                  </div>
+                <Reveal
+                  variant="badge"
+                  delayMs={index * 130}
+                  className="relative z-10 w-fit"
+                >
+                  <StepBadge id={item.id} />
+                </Reveal>
 
+                <Reveal variant="fade-up" delayMs={index * 130 + 70}>
                   <Eyebrow tone="muted" className="mt-6">
                     {item.step}
                   </Eyebrow>

@@ -11,6 +11,11 @@ export const ptDictionary: SiteDictionary = {
     ogImageAlt: "Pessoa focada estudando no laptop",
     skipToContent: "Ir para o conteúdo principal",
   },
+  intro: {
+    ariaLabel: "Abertura da Luma",
+    tagline: "Aprendizado prático para pessoas curiosas.",
+    skipLabel: "Pular abertura",
+  },
   header: {
     homeAriaLabel: "Início da Luma",
     primaryNavAriaLabel: "Navegação principal",

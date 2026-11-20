@@ -7,6 +7,7 @@ Responsive, internationalized (`EN` / `PT` / `ES` / `FR` / `DE`) single-page lan
 - **Live Preview (ES)**: [https://buzzvel-fe-test-2026.pages.dev/es](https://buzzvel-fe-test-2026.pages.dev/es)
 - **Live Preview (FR)**: [https://buzzvel-fe-test-2026.pages.dev/fr](https://buzzvel-fe-test-2026.pages.dev/fr)
 - **Live Preview (DE)**: [https://buzzvel-fe-test-2026.pages.dev/de](https://buzzvel-fe-test-2026.pages.dev/de)
+- **PageSpeed Insights Report**: [Run live check](https://pagespeed.web.dev/analysis?url=https%3A%2F%2Fbuzzvel-fe-test-2026.pages.dev%2F)
 
 ## Getting Started
 
@@ -41,6 +42,37 @@ pnpm build
 npx wrangler pages deploy out --project-name=buzzvel-fe-test-2026
 ```
 
+## Performance & Core Web Vitals (Google PageSpeed Insights)
+
+Measured on the live Cloudflare Pages production URL (`https://buzzvel-fe-test-2026.pages.dev/`) across **both Mobile and Desktop**:
+
+| Metric | Mobile | Desktop |
+| --- | :---: | :---: |
+| **Performance** | **100** | **100** |
+| **Accessibility** | **100** | **100** |
+| **Best Practices** | **100** | **100** |
+| **SEO** | **100** | **100** |
+| **First Contentful Paint (FCP)** | `0.9 s` | `0.3 s` |
+| **Largest Contentful Paint (LCP)** | `1.7 s` | `0.4 s` |
+| **Speed Index (SI)** | `1.4 s` | `0.5 s` |
+| **Total Blocking Time (TBT)** | `50 ms` | `0 ms` |
+| **Cumulative Layout Shift (CLS)** | `0.019` | `0.005` |
+
+### Mobile — 100 / 100 / 100 / 100
+
+![Google PageSpeed Insights Mobile 100/100/100/100](./docs/pagespeed-mobile.png)
+
+### Desktop — 100 / 100 / 100 / 100
+
+![Google PageSpeed Insights Desktop 100/100/100/100](./docs/pagespeed-desktop.png)
+
+### Key Performance Optimizations
+
+- **Zero render-blocking CSS**: Enabled `experimental.inlineCss: true` in `next.config.ts` so the ~10 KiB compressed Tailwind v4 stylesheet is inlined into the static HTML export, removing the render-blocking CSS round-trip.
+- **Pre-hydration BrandIntro reveal**: The center-split curtain transition is driven directly by the inline bootstrap script in `DocumentShell` + CSS selectors (`html[data-intro="opening"]`) and synchronized with `BrandIntro` on hydration, so Mobile FCP/LCP/Speed Index never wait on the React JS bundle.
+- **100% GPU-composited animations**: Curtain seam shadows/borders are rendered on `::after` pseudo-elements transitioning only `opacity`, paired with `transform`-only curtain movement (zero non-composited layout/paint animations).
+- **Responsive LCP hero image delivery**: Serves a dedicated mobile WebP (`public/images/hero-learner-sm.webp`, `560×684`, `18 KiB`) via `<picture>` and media-matched `<link rel="preload" as="image" fetchPriority="high">`, while setting `preload: false` on Google Fonts (`display: "swap"` with size-adjusted fallbacks) so the Hero LCP image gets top HTTP/2 bandwidth priority.
+
 ## Architecture & Implementation Highlights
 
 - **Static-first i18n (`EN` / `PT` / `ES` / `FR` / `DE`) with zero client hydration flicker**:
@@ -62,7 +94,7 @@ npx wrangler pages deploy out --project-name=buzzvel-fe-test-2026
   - `src/components/ui/` provides reusable `Button` (polymorphic link/button with variants), `Container`, `Eyebrow`, `SectionHeading`, `AvatarStack`, `Reveal`, `CountUp`, and inline SVG `Icons`.
   - `src/components/layout/` contains `DocumentShell`, `BrandIntro`, the sticky `Header` (with `LanguageSwitcher` and `MobileMenu`), and `Footer`.
   - `src/components/sections/` implements all 8 sections (`Hero`, `Categories`, `FeaturedCourse`, `HowItWorks`, `Testimonial`, `People`, `Contact` + `ContactForm`, and `FinalCTA`).
-- **Static export & image optimization**: Configured with `output: "export"` for Cloudflare Pages. All photographs in `public/images/` were pre-optimized and right-sized to crisp 2x–3x Retina WebP assets (~307 KB total vs. ~1.7 MB original JPEGs, an 82% reduction), keeping `hero-learner.jpg` for OpenGraph crawler compatibility.
+- **Static export & image optimization**: Configured with `output: "export"` and `experimental.inlineCss: true` for Cloudflare Pages. All photographs in `public/images/` were pre-optimized and right-sized to crisp Retina WebP assets (including a dedicated `18 KiB` mobile Hero variant), keeping `hero-learner.jpg` for OpenGraph crawler compatibility.
 - **Accessibility & reduced motion**:
   - Semantic landmarks (`<header>`, `<nav>`, `<main>`, `<section>`, `<figure>`, `<footer>`), localized skip-to-content link, single `<h1>`, descriptive `alt` text (and `aria-hidden` on decorative shapes/icons).
   - Keyboard-friendly focus rings (`focus-visible:ring-2`) across all interactive controls.
@@ -98,8 +130,8 @@ Because the Figma file does not define prototype links, tablet artboards, or an 
 | `pnpm build` | Passed cleanly (`out/` static export with `/`, `/en`, `/pt`, `/es`, `/fr`, `/de`, `404.html`) |
 | Responsive overflow (`360px`–`1440px`) | 0 horizontal overflow across 360, 402, 768, 1024, 1280, 1440px |
 | `axe-core` (WCAG 2.1 AA + best practices) | 0 violations (desktop, mobile, open mobile menu, form validation state) |
-| Lighthouse (Desktop) | Performance **100** · Accessibility **100** · Best Practices **100** · SEO **100** (LCP 0.6s, CLS 0) |
-| Lighthouse (Mobile) | Performance **99** · Accessibility **100** · Best Practices **100** · SEO **100** (LCP 2.1s, CLS 0) |
+| Google PageSpeed Insights (Desktop) | Performance **100** · Accessibility **100** · Best Practices **100** · SEO **100** (FCP `0.3s`, LCP `0.4s`, SI `0.5s`, TBT `0ms`, CLS `0.005`) |
+| Google PageSpeed Insights (Mobile) | Performance **100** · Accessibility **100** · Best Practices **100** · SEO **100** (FCP `0.9s`, LCP `1.7s`, SI `1.4s`, TBT `50ms`, CLS `0.019`) |
 | Live Cloudflare Pages smoke test | HTTP 200 on all locales, 20/20 images loaded, `POST /api/contact` delivers localized Resend confirmation emails |
 
 ## Known Gaps
@@ -108,10 +140,10 @@ Because the Figma file does not define prototype links, tablet artboards, or an 
 
 ## Approximate Time Spent
 
-~3.5 hours total (design inspection & asset extraction, project setup, responsive section implementation, static-first 5-language i18n, BrandIntro + scroll/count-up animations, Resend transactional email integration on Cloudflare Pages Functions, WebP optimization, accessibility & visual verification, automated tests, and documentation).
+~4 hours total (design inspection & asset extraction, project setup, responsive section implementation, static-first 5-language i18n, BrandIntro + scroll/count-up animations, Resend transactional email integration on Cloudflare Pages Functions, WebP & Core Web Vitals optimization to 100/100 Mobile & Desktop, accessibility & visual verification, automated tests, and documentation).
 
 ## AI Tools Used & Verification
 
-AI coding assistants (Claude and Antigravity/Gemini inside T3 Code) were used to inspect the Figma node tree, extract exact design tokens and SVGs, scaffold components and i18n dictionaries, and write automated verification scripts.
+AI coding assistants (Claude and Antigravity/Gemini inside T3 Code) were used to inspect the Figma node tree, extract exact design tokens and SVGs, scaffold components and i18n dictionaries, optimize Core Web Vitals, and write automated verification scripts.
 
-All generated output was verified against the design and quality bar through Playwright viewport, scroll-reveal, and screenshot checks, `axe-core` WCAG 2.1 AA scans, local production Lighthouse runs, keyboard navigation tests, Vitest + Testing Library unit/component tests, ESLint, a clean Next.js static export build, and live smoke testing on Cloudflare Pages.
+All generated output was verified against the design and quality bar through Playwright viewport, scroll-reveal, and screenshot checks, `axe-core` WCAG 2.1 AA scans, live Google PageSpeed Insights audits (Mobile & Desktop 100/100/100/100), keyboard navigation tests, Vitest + Testing Library unit/component tests, ESLint, a clean Next.js static export build, and live smoke testing on Cloudflare Pages.

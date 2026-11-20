@@ -3,13 +3,17 @@ import type { Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "@/app/globals.css";
 import { getDictionary, LOCALE_META, type Locale } from "@/i18n";
-import { INTRO_SKIP_STORAGE_KEY } from "@/components/layout/BrandIntro";
+import {
+  INTRO_OPENING_EVENT,
+  INTRO_SKIP_STORAGE_KEY,
+} from "@/components/layout/BrandIntro";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: ["400", "600", "700"],
   display: "swap",
+  preload: false,
 });
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -17,6 +21,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   weight: ["600", "700", "800"],
   display: "swap",
+  preload: false,
 });
 
 export const sharedViewport: Viewport = {
@@ -27,7 +32,9 @@ export const sharedViewport: Viewport = {
 
 const INTRO_BOOTSTRAP_SCRIPT = `try{var s=false;try{s=sessionStorage.getItem(${JSON.stringify(
   INTRO_SKIP_STORAGE_KEY,
-)})==="1"}catch(e){}if(!s&&!location.hash&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.dataset.intro="active"}}catch(e){}`;
+)})==="1"}catch(e){}if(!s&&!location.hash&&!matchMedia("(prefers-reduced-motion: reduce)").matches){var r=document.documentElement;r.dataset.intro="active";var o=function(){if(r.dataset.intro!=="active")return;r.dataset.intro="opening";window.dispatchEvent(new CustomEvent(${JSON.stringify(
+  INTRO_OPENING_EVENT,
+)}));setTimeout(function(){if(r.dataset.intro==="opening")r.dataset.intro="done"},480)};window.__lumaOpenIntro=o;setTimeout(o,matchMedia("(max-width: 767px)").matches?180:420)}}catch(e){}`;
 
 interface DocumentShellProps {
   locale: Locale;
@@ -44,6 +51,20 @@ export function DocumentShell({ locale, children }: DocumentShellProps) {
       className={`${inter.variable} ${plusJakartaSans.variable} antialiased`}
     >
       <body className="min-h-screen flex flex-col bg-cream text-ink font-sans">
+        <link
+          rel="preload"
+          as="image"
+          href="/images/hero-learner-sm.webp"
+          media="(max-width: 1023px)"
+          fetchPriority="high"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/images/hero-learner.webp"
+          media="(min-width: 1024px)"
+          fetchPriority="high"
+        />
         <script
           dangerouslySetInnerHTML={{ __html: INTRO_BOOTSTRAP_SCRIPT }}
         />

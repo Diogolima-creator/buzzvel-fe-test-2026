@@ -11,6 +11,7 @@ describe("BrandIntro", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     delete document.documentElement.dataset.intro;
+    delete window.__lumaOpenIntro;
     document.documentElement.style.overflow = "";
     window.sessionStorage.clear();
     window.history.replaceState(null, "", "/");
@@ -21,6 +22,7 @@ describe("BrandIntro", () => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
     delete document.documentElement.dataset.intro;
+    delete window.__lumaOpenIntro;
     document.documentElement.style.overflow = "";
     window.sessionStorage.clear();
   });
@@ -41,7 +43,7 @@ describe("BrandIntro", () => {
 
     // Advance past minimum visible time -> curtain starts opening from center
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(1150);
+      await vi.advanceTimersByTimeAsync(450);
     });
 
     expect(onOpening).toHaveBeenCalledTimes(1);
@@ -52,7 +54,7 @@ describe("BrandIntro", () => {
 
     // Advance past curtain split duration -> unmounts and unlocks scroll
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(850);
+      await vi.advanceTimersByTimeAsync(520);
     });
 
     expect(
@@ -73,7 +75,7 @@ describe("BrandIntro", () => {
     expect(document.documentElement.dataset.intro).toBe("opening");
 
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(850);
+      await vi.advanceTimersByTimeAsync(520);
     });
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();

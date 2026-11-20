@@ -8,9 +8,15 @@ import { LumaLogo } from "@/components/ui/Icons";
 export const INTRO_SKIP_STORAGE_KEY = "luma:skip-next-intro";
 export const INTRO_OPENING_EVENT = "luma:intro-opening";
 
-const MIN_VISIBLE_MS = 1050;
-const MAX_VISIBLE_MS = 2100;
-const CURTAIN_DURATION_MS = 800;
+const MIN_VISIBLE_MS = 420;
+const MAX_VISIBLE_MS = 1200;
+const CURTAIN_DURATION_MS = 480;
+
+declare global {
+  interface Window {
+    __lumaOpenIntro?: () => void;
+  }
+}
 
 let consumedSkipHref: string | null = null;
 
@@ -63,8 +69,14 @@ export function BrandIntro({ content = enDictionary.intro }: BrandIntroProps) {
     const root = document.documentElement;
     let cancelled = false;
 
-    if (!shouldShowIntro() || consumeSkipNextIntro()) {
-      delete root.dataset.intro;
+    if (
+      root.dataset.intro === "done" ||
+      !shouldShowIntro() ||
+      consumeSkipNextIntro()
+    ) {
+      if (root.dataset.intro !== "done") {
+        delete root.dataset.intro;
+      }
       queueMicrotask(() => {
         if (!cancelled) {
           setPhase("done");
@@ -75,33 +87,15 @@ export function BrandIntro({ content = enDictionary.intro }: BrandIntroProps) {
       };
     }
 
-    root.dataset.intro = "active";
-
-    let opening = false;
-    let minTimer: ReturnType<typeof setTimeout> | undefined;
     let exitTimer: ReturnType<typeof setTimeout> | undefined;
-
-    const startedAt = performance.now();
     const previousOverflow = root.style.overflow;
-    root.style.overflow = "hidden";
 
     const reducedMotionQuery =
       typeof window.matchMedia === "function"
         ? window.matchMedia("(prefers-reduced-motion: reduce)")
         : null;
 
-    const open = () => {
-      if (cancelled || opening) return;
-      opening = true;
-
-      const restoreFocus = Boolean(
-        panelRef.current?.contains(document.activeElement),
-      );
-
-      root.dataset.intro = "opening";
-      setPhase("opening");
-      window.dispatchEvent(new CustomEvent(INTRO_OPENING_EVENT));
-
+    const finishAfterCurtain = (restoreFocus: boolean) => {
       const waitMs = reducedMotionQuery?.matches ? 0 : CURTAIN_DURATION_MS;
       exitTimer = setTimeout(() => {
         if (cancelled) return;
@@ -118,9 +112,54 @@ export function BrandIntro({ content = enDictionary.intro }: BrandIntroProps) {
       }, waitMs);
     };
 
-    triggerOpenRef.current = open;
+    // If the pre-hydration bootstrap already started opening the curtains,
+    // sync React state and unmount once the curtain split finishes.
+    if (root.dataset.intro === "opening") {
+      queueMicrotask(() => {
+        if (!cancelled) {
+          setPhase("opening");
+        }
+      });
+      finishAfterCurtain(false);
+      return () => {
+        cancelled = true;
+        if (exitTimer) clearTimeout(exitTimer);
+        root.style.overflow = previousOverflow;
+      };
+    }
 
-    const maxTimer = setTimeout(open, MAX_VISIBLE_MS);
+    root.dataset.intro = "active";
+    root.style.overflow = "hidden";
+
+    let opening = false;
+    let minTimer: ReturnType<typeof setTimeout> | undefined;
+    let maxTimer: ReturnType<typeof setTimeout> | undefined;
+
+    const syncOpening = () => {
+      if (cancelled || opening) return;
+      opening = true;
+
+      const restoreFocus = Boolean(
+        panelRef.current?.contains(document.activeElement),
+      );
+
+      root.dataset.intro = "opening";
+      setPhase("opening");
+      finishAfterCurtain(restoreFocus);
+    };
+
+    const open = () => {
+      if (cancelled || opening) return;
+      if (typeof window.__lumaOpenIntro === "function") {
+        window.__lumaOpenIntro();
+        syncOpening();
+        return;
+      }
+      syncOpening();
+      window.dispatchEvent(new CustomEvent(INTRO_OPENING_EVENT));
+    };
+
+    triggerOpenRef.current = open;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -135,31 +174,40 @@ export function BrandIntro({ content = enDictionary.intro }: BrandIntroProps) {
     };
 
     window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener(INTRO_OPENING_EVENT, syncOpening, { once: true });
     reducedMotionQuery?.addEventListener?.("change", handlePreferenceChange);
 
-    const heroImg = document.querySelector<HTMLImageElement>(
-      "[data-hero-image] img",
-    );
-    const heroReady =
-      typeof heroImg?.decode === "function"
-        ? heroImg.decode().catch(() => undefined)
-        : Promise.resolve();
-    const fontsReady =
-      document.fonts?.ready?.catch(() => undefined) ?? Promise.resolve();
+    // When the inline pre-hydration bootstrap script is present, it owns the
+    // reveal schedule so LCP/Speed Index never wait on JS hydration.
+    if (typeof window.__lumaOpenIntro !== "function") {
+      const startedAt = performance.now();
+      maxTimer = setTimeout(open, MAX_VISIBLE_MS);
 
-    Promise.allSettled([heroReady, fontsReady]).then(() => {
-      if (cancelled || opening) return;
-      const elapsed = performance.now() - startedAt;
-      const remaining = Math.max(0, MIN_VISIBLE_MS - elapsed);
-      minTimer = setTimeout(open, remaining);
-    });
+      const heroImg = document.querySelector<HTMLImageElement>(
+        "[data-hero-image] img",
+      );
+      const heroReady =
+        typeof heroImg?.decode === "function"
+          ? heroImg.decode().catch(() => undefined)
+          : Promise.resolve();
+      const fontsReady =
+        document.fonts?.ready?.catch(() => undefined) ?? Promise.resolve();
+
+      Promise.allSettled([heroReady, fontsReady]).then(() => {
+        if (cancelled || opening) return;
+        const elapsed = performance.now() - startedAt;
+        const remaining = Math.max(0, MIN_VISIBLE_MS - elapsed);
+        minTimer = setTimeout(open, remaining);
+      });
+    }
 
     return () => {
       cancelled = true;
-      clearTimeout(maxTimer);
+      if (maxTimer) clearTimeout(maxTimer);
       if (minTimer) clearTimeout(minTimer);
       if (exitTimer) clearTimeout(exitTimer);
       window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener(INTRO_OPENING_EVENT, syncOpening);
       reducedMotionQuery?.removeEventListener?.(
         "change",
         handlePreferenceChange,

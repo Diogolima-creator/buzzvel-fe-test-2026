@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Colors */
+  --color-ink: #171b2c;
+  --color-primary: #3157f6;
+  --color-primary-hover: #2447dc;
+  --color-primary-soft: #e2e8ff;
+  --color-muted: #656770;
+  --color-muted-2: #666c7c;
+  --color-subtle: #9e9faa;
+  --color-cream: #f9f8f3;
+  --color-border: #dbdfeb;
+  --color-line: #e7e7ec;
+  --color-yellow: #ffee7e;
+  --color-yellow-hover: #f5e166;
+  --color-yellow-soft: #fff1c2;
+  --color-yellow-accent: #e9d659;
+  --color-peach: #ffcb9f;
+  --color-coral: #ff704d;
+  --color-error: #d92d20;
+  --color-success-bg: #ecfdf3;
+  --color-success-border: #abefc6;
+  --color-success-text: #067647;
+
+  /* Fonts */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
+
+  /* Shadows */
+  --shadow-badge: 0 4px 24px 0 rgba(0, 0, 0, 0.1);
+  --shadow-form: 0 12px 32px 0 rgba(23, 27, 44, 0.04);
+  --shadow-card: 0 10px 24px -6px rgba(23, 27, 44, 0.08);
+  --shadow-mosaic: 0 0 4px 0 rgba(0, 0, 0, 0.07), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}

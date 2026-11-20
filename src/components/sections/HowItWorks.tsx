@@ -23,7 +23,7 @@ function StepBadge({ id }: { id: StepItem["id"] }) {
         aria-hidden="true"
         className="relative h-14 w-14 transition-transform duration-300 ease-out hover:scale-105"
       >
-        <div className="absolute inset-0 -rotate-12 rounded-[8px] bg-coral/15 md:bg-peach" />
+        <div className="absolute inset-0 rotate-12 rounded-[8px] bg-coral/15 md:bg-peach" />
         <div className="absolute top-6 left-6 h-7 w-7 rounded-full bg-coral" />
       </div>
     );
@@ -67,7 +67,7 @@ export function HowItWorks({
           <Reveal
             variant="line-x"
             delayMs={120}
-            className="pointer-events-none hidden h-px bg-border md:absolute md:top-[28px] md:left-[52px] md:block md:w-[calc(66.666%+16px)] lg:top-[56px] lg:w-[761px]"
+            className="pointer-events-none hidden h-px bg-border md:absolute md:top-[28px] md:left-[52px] md:block md:w-[calc(66.666%-26px)] lg:top-[56.5px] lg:w-[761px]"
           />
 
           <ol className="grid grid-cols-1 md:grid-cols-3 md:gap-10 lg:gap-20">
@@ -95,7 +95,7 @@ export function HowItWorks({
                     {item.title}
                   </h3>
 
-                  <p className="mt-3 text-[14px] leading-[24px] text-muted lg:text-[16px] lg:leading-[28px]">
+                  <p className="mt-3 text-[14px] leading-[24px] text-muted-2 lg:text-[16px] lg:leading-[28px]">
                     {item.description}
                   </p>
                 </Reveal>

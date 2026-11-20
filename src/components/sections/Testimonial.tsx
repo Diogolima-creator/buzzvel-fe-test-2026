@@ -33,14 +33,14 @@ export function Testimonial({
               </blockquote>
 
               <figcaption className="mt-8 flex items-center gap-4">
-                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-primary-soft">
+                <div className="group relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-primary-soft transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.15] hover:shadow-md">
                   <Image
                     src={author.avatarSrc}
                     alt={author.avatarAlt}
                     width={48}
                     height={48}
-                    sizes="48px"
-                    className="h-full w-full object-cover"
+                    sizes="96px"
+                    className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
                   />
                 </div>
 

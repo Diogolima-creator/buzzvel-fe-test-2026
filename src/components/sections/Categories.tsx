@@ -15,10 +15,10 @@ function CategoryCard({ category, exploreLabel }: CategoryCardProps) {
   return (
     <a
       href={category.href}
-      className="group flex h-full flex-col justify-between rounded-[16px] border border-border bg-white p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 lg:min-h-[265px] lg:p-7"
+      className="group flex h-full flex-col justify-between rounded-[16px] border border-border bg-white p-6 transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 lg:min-h-[265px] lg:p-7"
     >
       <div>
-        <span className="inline-flex items-center justify-center rounded-[6px] bg-primary-soft px-2 py-1 text-[12px] leading-[16px] font-semibold tracking-[1.44px] text-primary uppercase">
+        <span className="inline-flex items-center justify-center rounded-[6px] bg-primary-soft px-2 py-1 text-[12px] leading-[16px] font-semibold tracking-[1.44px] text-primary uppercase transition-transform duration-200 group-hover:scale-105">
           {category.number}
         </span>
 
@@ -55,22 +55,26 @@ export function Categories({
       className="scroll-mt-[70px] bg-white py-[60px] lg:py-[100px]"
     >
       <Container>
-        <Reveal className="max-w-[560px]">
-          <Eyebrow>{eyebrow}</Eyebrow>
-          <SectionHeading id="categories-heading" className="mt-4">
-            {heading}
-          </SectionHeading>
-          <p className="mt-4 text-[16px] leading-[26px] text-muted lg:text-[18px] lg:leading-[28px]">
-            {description}
-          </p>
-        </Reveal>
+        <div className="max-w-[560px]">
+          <Reveal variant="fade-up" delayMs={0}>
+            <Eyebrow>{eyebrow}</Eyebrow>
+            <SectionHeading id="categories-heading" className="mt-4">
+              {heading}
+            </SectionHeading>
+          </Reveal>
+          <Reveal variant="fade-up" delayMs={90}>
+            <p className="mt-4 text-[16px] leading-[26px] text-muted lg:text-[18px] lg:leading-[28px]">
+              {description}
+            </p>
+          </Reveal>
+        </div>
 
         <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-10 lg:grid-cols-4 lg:gap-5">
           {items.map((item, index) => (
             <Reveal
               key={item.number}
               variant="card"
-              delayMs={index * 90}
+              delayMs={110 + index * 105}
               className="h-full"
             >
               <CategoryCard category={item} exploreLabel={exploreLabel} />

@@ -275,6 +275,8 @@ export const deDictionary: SiteDictionary = {
     submittingLabel: "Wird gesendet...",
     successMessage:
       "Vielen Dank für deine Nachricht! Wir haben sie erhalten und antworten innerhalb von 24 Stunden an Werktagen.",
+    errorMessage:
+      "Deine Nachricht konnte gerade nicht gesendet werden. Bitte versuche es gleich noch einmal.",
     validation: {
       nameRequired: "Bitte gib deinen vollständigen Namen ein.",
       nameMinLength: "Der Name muss mindestens 2 Zeichen lang sein.",

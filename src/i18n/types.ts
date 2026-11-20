@@ -68,6 +68,7 @@ export interface ContactSectionContent {
   submitLabel: string;
   submittingLabel: string;
   successMessage: string;
+  errorMessage: string;
   validation: ContactValidationMessages;
 }
 

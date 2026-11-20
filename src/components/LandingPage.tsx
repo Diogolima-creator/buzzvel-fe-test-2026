@@ -29,7 +29,7 @@ export function LandingPage({ locale }: LandingPageProps) {
         <HowItWorks content={dictionary.howItWorks} />
         <Testimonial content={dictionary.testimonial} />
         <People content={dictionary.people} />
-        <Contact content={dictionary.contact} />
+        <Contact locale={locale} content={dictionary.contact} />
         <FinalCTA content={dictionary.finalCta} />
       </main>
       <Footer content={dictionary.footer} />

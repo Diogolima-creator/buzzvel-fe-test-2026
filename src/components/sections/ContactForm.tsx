@@ -2,6 +2,7 @@
 
 import { useId, useState, type ChangeEvent, type FormEvent } from "react";
 import type { ContactSectionContent } from "@/i18n/types";
+import type { Locale } from "@/i18n/config";
 import { enDictionary } from "@/i18n/dictionaries/en";
 import {
   hasValidationErrors,
@@ -18,10 +19,12 @@ const INITIAL_VALUES: ContactFormValues = {
 };
 
 interface ContactFormProps {
+  locale?: Locale;
   content?: ContactSectionContent;
 }
 
 export function ContactForm({
+  locale = "en",
   content = enDictionary.contact,
 }: ContactFormProps) {
   const {
@@ -31,6 +34,7 @@ export function ContactForm({
     submitLabel,
     submittingLabel,
     successMessage,
+    errorMessage,
     validation,
   } = content;
 
@@ -38,6 +42,7 @@ export function ContactForm({
   const [errors, setErrors] = useState<ContactFormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const nameId = useId();
   const emailId = useId();
@@ -58,6 +63,9 @@ export function ContactForm({
       if (submitted) {
         setSubmitted(false);
       }
+      if (submitError) {
+        setSubmitError(null);
+      }
     };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -67,17 +75,46 @@ export function ContactForm({
     if (hasValidationErrors(validationErrors)) {
       setErrors(validationErrors);
       setSubmitted(false);
+      setSubmitError(null);
       return;
     }
 
     setErrors({});
+    setSubmitError(null);
     setIsSubmitting(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: values.name.trim(),
+          email: values.email.trim(),
+          question: values.question.trim(),
+          locale,
+        }),
+      });
 
-    setIsSubmitting(false);
-    setSubmitted(true);
-    setValues(INITIAL_VALUES);
+      const data = (await response.json().catch(() => null)) as {
+        ok?: boolean;
+      } | null;
+
+      if (!response.ok || !data?.ok) {
+        setSubmitted(false);
+        setSubmitError(errorMessage);
+        return;
+      }
+
+      setSubmitted(true);
+      setValues(INITIAL_VALUES);
+    } catch {
+      setSubmitted(false);
+      setSubmitError(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const inputBaseClass =
@@ -222,6 +259,15 @@ export function ContactForm({
             className="rounded-[8px] border border-success-border bg-success-bg px-4 py-3 text-[14px] leading-[22px] text-success-text"
           >
             {successMessage}
+          </div>
+        ) : null}
+
+        {submitError ? (
+          <div
+            role="alert"
+            className="rounded-[8px] border border-error/30 bg-error/5 px-4 py-3 text-[14px] leading-[22px] text-error"
+          >
+            {submitError}
           </div>
         ) : null}
       </form>

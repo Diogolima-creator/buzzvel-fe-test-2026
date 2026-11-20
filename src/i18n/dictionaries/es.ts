@@ -278,6 +278,8 @@ export const esDictionary: SiteDictionary = {
     submittingLabel: "Enviando...",
     successMessage:
       "¡Gracias por escribirnos! Hemos recibido tu mensaje y responderemos en un plazo de 24 horas en días laborables.",
+    errorMessage:
+      "No pudimos enviar tu mensaje en este momento. Inténtalo de nuevo en un instante.",
     validation: {
       nameRequired: "Por favor, introduce tu nombre completo.",
       nameMinLength: "El nombre debe tener al menos 2 caracteres.",

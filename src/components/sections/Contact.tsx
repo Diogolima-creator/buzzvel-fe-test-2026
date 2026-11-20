@@ -1,4 +1,4 @@
-import type { SiteDictionary } from "@/i18n/types";
+import type { Locale, SiteDictionary } from "@/i18n";
 import { enDictionary } from "@/i18n/dictionaries/en";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -8,10 +8,14 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ContactForm } from "@/components/sections/ContactForm";
 
 interface ContactProps {
+  locale?: Locale;
   content?: SiteDictionary["contact"];
 }
 
-export function Contact({ content = enDictionary.contact }: ContactProps) {
+export function Contact({
+  locale = "en",
+  content = enDictionary.contact,
+}: ContactProps) {
   const {
     eyebrow,
     heading,
@@ -84,7 +88,7 @@ export function Contact({ content = enDictionary.contact }: ContactProps) {
             delayMs={150}
             className="w-full lg:w-[540px] lg:shrink-0"
           >
-            <ContactForm content={content} />
+            <ContactForm locale={locale} content={content} />
           </Reveal>
         </div>
       </Container>

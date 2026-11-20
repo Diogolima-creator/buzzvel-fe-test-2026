@@ -276,6 +276,8 @@ export const frDictionary: SiteDictionary = {
     submittingLabel: "Envoi en cours...",
     successMessage:
       "Merci pour votre message ! Nous l’avons bien reçu et vous répondrons sous 24 heures les jours ouvrés.",
+    errorMessage:
+      "Nous n’avons pas pu envoyer votre message pour le moment. Veuillez réessayer dans un instant.",
     validation: {
       nameRequired: "Veuillez saisir votre nom complet.",
       nameMinLength: "Le nom doit contenir au moins 2 caractères.",

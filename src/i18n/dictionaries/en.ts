@@ -274,6 +274,8 @@ export const enDictionary: SiteDictionary = {
     submittingLabel: "Sending...",
     successMessage:
       "Thanks for reaching out! We’ve received your message and will reply within 24 hours on business days.",
+    errorMessage:
+      "We couldn’t send your message right now. Please try again in a moment.",
     validation: {
       nameRequired: "Please enter your full name.",
       nameMinLength: "Name must be at least 2 characters.",

@@ -275,6 +275,8 @@ export const ptDictionary: SiteDictionary = {
     submittingLabel: "Enviando...",
     successMessage:
       "Obrigado pelo contato! Recebemos sua mensagem e responderemos em até 24 horas em dias úteis.",
+    errorMessage:
+      "Não conseguimos enviar sua mensagem agora. Tente novamente em instantes.",
     validation: {
       nameRequired: "Por favor, informe seu nome completo.",
       nameMinLength: "O nome deve ter pelo menos 2 caracteres.",

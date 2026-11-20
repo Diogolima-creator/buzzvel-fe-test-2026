@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import type { SiteDictionary } from "@/i18n/types";
 import { enDictionary } from "@/i18n/dictionaries/en";
@@ -107,7 +108,7 @@ export function Hero({ content = enDictionary.hero }: HeroProps) {
 
               {/* Top-left floating badge */}
               <div className="animate-badge-in [animation-delay:380ms] absolute top-[6px] left-0 z-20 lg:top-4 lg:-left-[22px]">
-                <div className="animate-float-slow flex items-center gap-3 rounded-[12px] bg-white px-4 py-3 shadow-badge">
+                <div className="animate-float-slow flex items-center gap-3 rounded-[12px] bg-white px-4 py-3 shadow-badge transition-shadow duration-200 hover:shadow-card">
                   <span className="inline-flex h-8 min-w-[43px] items-center justify-center rounded-[8px] bg-primary-soft px-1 text-[14px] leading-[24px] font-bold text-primary">
                     <CountUp
                       text={coursesBadge.count}
@@ -121,16 +122,35 @@ export function Hero({ content = enDictionary.hero }: HeroProps) {
                 </div>
               </div>
 
-              {/* Bottom-right floating rating badge */}
+              {/* Bottom-right floating rating badge with staggered star entrance + golden glint wave */}
               <div className="animate-badge-in [animation-delay:500ms] absolute top-[297px] right-[-11px] z-20 lg:top-[437px] lg:right-auto lg:left-[348px]">
-                <div className="animate-float-slow-alt flex items-center gap-2 rounded-[12px] bg-white px-4 py-3 shadow-badge">
+                <div className="animate-float-slow-alt group flex items-center gap-2 rounded-[12px] bg-white px-4 py-3 shadow-badge transition-shadow duration-200 hover:shadow-card">
                   <div
                     aria-hidden="true"
                     className="flex items-center gap-[2px]"
                   >
                     {Array.from({ length: ratingBadge.stars }).map(
                       (_, index) => (
-                        <StarIcon key={index} />
+                        <span
+                          key={index}
+                          className="animate-star-in"
+                          style={
+                            {
+                              "--star-enter-delay": `${560 + index * 75}ms`,
+                            } as CSSProperties
+                          }
+                        >
+                          <span
+                            className="animate-star-wave transition-transform duration-200 group-hover:scale-110"
+                            style={
+                              {
+                                "--star-wave-delay": `${1450 + index * 110}ms`,
+                              } as CSSProperties
+                            }
+                          >
+                            <StarIcon />
+                          </span>
+                        </span>
                       ),
                     )}
                   </div>

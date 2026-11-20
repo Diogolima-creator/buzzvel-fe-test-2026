@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { INTRO_OPENING_EVENT } from "@/components/layout/BrandIntro";
 
 export type RevealVariant =
   | "fade-up"
@@ -39,35 +40,59 @@ export function Reveal({
     }
 
     const rect = element.getBoundingClientRect();
-    if (rect.top <= window.innerHeight * 0.94) {
+    // Only skip animating if the element is already clearly inside the upper fold
+    // (e.g., opened via a #hash anchor or scrolled mid-page).
+    if (rect.top < window.innerHeight * 0.55 && rect.bottom > 0) {
       return;
     }
 
     element.dataset.reveal = "hidden";
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (
-            entry.isIntersecting ||
-            entry.boundingClientRect.top < window.innerHeight
-          ) {
-            element.dataset.reveal = "visible";
-            observer.disconnect();
-            break;
-          }
-        }
-      },
-      {
-        threshold: 0.08,
-        rootMargin: "0px 0px -36px 0px",
-      },
-    );
+    let observer: IntersectionObserver | null = null;
+    let waitingForIntro = false;
 
-    observer.observe(element);
+    const startObserving = () => {
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (
+              entry.isIntersecting ||
+              entry.boundingClientRect.top < window.innerHeight * 0.85
+            ) {
+              element.dataset.reveal = "visible";
+              observer?.disconnect();
+              break;
+            }
+          }
+        },
+        {
+          threshold: 0.12,
+          rootMargin: "0px 0px -64px 0px",
+        },
+      );
+
+      observer.observe(element);
+    };
+
+    const handleIntroOpening = () => {
+      waitingForIntro = false;
+      startObserving();
+    };
+
+    if (document.documentElement.dataset.intro === "active") {
+      waitingForIntro = true;
+      window.addEventListener(INTRO_OPENING_EVENT, handleIntroOpening, {
+        once: true,
+      });
+    } else {
+      startObserving();
+    }
 
     return () => {
-      observer.disconnect();
+      observer?.disconnect();
+      if (waitingForIntro) {
+        window.removeEventListener(INTRO_OPENING_EVENT, handleIntroOpening);
+      }
     };
   }, []);
 
